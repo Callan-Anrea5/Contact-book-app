@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="">Please enter valid Api key or keys</div>
+    <form >
+        <input type="text" name="apiKey" id="apiKey">
+        <button id="submitApiKey" type="submit">Submit</button>
+    </form>
+
+    <script>
+        // you created a link to the database via the api key
+        let rootPath="https://mysite.itvarsity.org/api/ContactBook/";
+        // handle the form's submit event instead of button click
+        document.querySelector("form").addEventListener("submit", setApiKey);
+
+        // custom function named setApiKey 
+        function setApiKey(e)
+        {
+            // 
+            e.preventDefault();
+
+            // you created a variable named apiKey
+            let apiKey = document.getElementById("apiKey").value;
+            // built in function the connection to the database
+            fetch(rootPath+"controller/api-key/?apiKey="+apiKey)
+            .then(function (response){
+                // whatever is found/fetched from the the connection please return as text
+                return response.text();
+            })
+            .then(function(data){
+                // 1 means true and 0 means false
+                if(data == "1")
+                {
+                    // if data (apikey) was found please return or display index.html
+                    localStorage.setItem("apiKey",apiKey);
+                    window.open("index.html","_self");
+
+                }
+                else{
+                    // if no api key was found than create an alert
+                    alert(data+"invalid api key entered")
+                }
+            })
+        }
+    </script>
+</body>
+</html>

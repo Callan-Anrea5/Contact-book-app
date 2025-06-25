@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="fetchContacts()">
+    <div class="" id="table">Contacts Loading...</div>
+    <button id="refresh" type="button" >Refresh</button>
+    <button id="addContact" type="button">Add Contact</button>
+
+    <!-- you imported your config.js -->
+    <script src="config.js"></script>
+    <script>
+
+        // this is linked to the button refresh
+        document.getElementById("refresh").addEventListener('click',fetchContacts)
+         // this is linked to the button Add contact
+        document.getElementById("addContact").addEventListener('click',addContact)
+
+        // you created function named fetchContacts
+        function fetchContacts()
+        {
+
+            fetch(rootPath + "controller/get-contacts/")
+            .then(function(response){
+                // Check if the response is OK (status in the range 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // return a response from the fetch as a json file
+                return response.json();
+            })
+            .then(function(data){
+                // pass data into the custom function named displayOutput
+                displayOutput(data);
+                // console is just to see whats happening with code behind the scenes
+                // console.log(data);
+
+            })
+            .catch(function(error){
+                document.getElementById("table").innerHTML = "Failed to load contacts.";
+                console.error("Error fetching contacts:", error);
+            });
+        }
+
+        // custom function named displayOutput
+        function displayOutput(data)
+        {
+            // variable named output and then you assigned the opening html tag named table
+            let output = "<table>";
+
+                // for loop, im going through everything thats inside data and im returning it as a single object
+                for(a in data)
+            {
+                // this is a different version of concatination
+            
+                output += `
+                <tr onclick="editContact(${data[a].id})">
+                    <td><img src="${rootPath}controller/uploads/${data[a].avatar || 'default-avatar.png'}" alt="Avatar" /></td>
+                    <td><h5>${data[a].firstname}</h5></td>
+                    <td><h5>${data[a].lastname}</h5></td>
+              </tr>
+                `
+            }
+
+            output += "</table>";
+            document.getElementById("table").innerHTML = output;
+        }
+
+        function addContact()
+        {
+            window.open("add-contact.html", "_self");
+        }
+
+        function editContact(id)
+        {
+            window.open("edit-contact.html?id=" + id,"_self");
+        }
+    </script>
+</body>
+</html>
